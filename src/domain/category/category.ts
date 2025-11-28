@@ -21,6 +21,26 @@ export class Category extends AggregateRoot<CategoryDomainEvent> {
     super();
   }
 
+  static rehydrate(params: {
+    id: string;
+    userId: string;
+    name: string;
+    description: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+    isDeleted: boolean;
+  }): Category {
+    return new Category(
+      params.id,
+      params.userId,
+      params.name,
+      params.description,
+      params.createdAt,
+      params.updatedAt,
+      params.isDeleted,
+    );
+  }
+
   static createForUser(params: {
     id: string;
     user: User;
@@ -66,7 +86,7 @@ export class Category extends AggregateRoot<CategoryDomainEvent> {
       occurredAt: now,
     };
 
-    category['recordEvent'](event as CategoryDomainEvent);
+    category.recordEvent(event as CategoryDomainEvent);
 
     return category;
   }
@@ -119,7 +139,7 @@ export class Category extends AggregateRoot<CategoryDomainEvent> {
       occurredAt: now,
     };
 
-    this['recordEvent'](event as CategoryDomainEvent);
+    this.recordEvent(event as CategoryDomainEvent);
   }
 
   delete(now: Date = new Date()): void {
@@ -141,6 +161,6 @@ export class Category extends AggregateRoot<CategoryDomainEvent> {
       occurredAt: now,
     };
 
-    this['recordEvent'](event as CategoryDomainEvent);
+    this.recordEvent(event as CategoryDomainEvent);
   }
 }

@@ -21,6 +21,26 @@ export class User extends AggregateRoot<UserDomainEvent> {
     super();
   }
 
+  static rehydrate(params: {
+    id: string;
+    name: string;
+    email: Email;
+    passwordHash: string;
+    createdAt: Date;
+    updatedAt: Date;
+    isDeleted: boolean;
+  }): User {
+    return new User(
+      params.id,
+      params.name,
+      params.email,
+      params.passwordHash,
+      params.createdAt,
+      params.updatedAt,
+      params.isDeleted,
+    );
+  }
+
   static create(params: {
     id: string;
     name: string;

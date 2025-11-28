@@ -26,6 +26,32 @@ export class Todo extends AggregateRoot<TodoDomainEvent> {
     super();
   }
 
+  static rehydrate(params: {
+    id: string;
+    categoryId: string;
+    title: string;
+    description: string | null;
+    dueDate: Date | null;
+    status: TodoStatus;
+    createdAt: Date;
+    updatedAt: Date;
+    completedAt: Date | null;
+    isDeleted: boolean;
+  }): Todo {
+    return new Todo(
+      params.id,
+      params.categoryId,
+      params.title,
+      params.description,
+      params.dueDate,
+      params.status,
+      params.createdAt,
+      params.updatedAt,
+      params.completedAt,
+      params.isDeleted,
+    );
+  }
+
   static createForCategory(params: {
     id: string;
     category: Category;
@@ -80,7 +106,7 @@ export class Todo extends AggregateRoot<TodoDomainEvent> {
       occurredAt: now,
     };
 
-    todo['recordEvent'](event as TodoDomainEvent);
+    todo.recordEvent(event as TodoDomainEvent);
 
     return todo;
   }
@@ -157,7 +183,7 @@ export class Todo extends AggregateRoot<TodoDomainEvent> {
       occurredAt: now,
     };
 
-    this['recordEvent'](event as TodoDomainEvent);
+    this.recordEvent(event as TodoDomainEvent);
   }
 
   complete(now: Date = new Date()): void {
@@ -183,7 +209,7 @@ export class Todo extends AggregateRoot<TodoDomainEvent> {
       occurredAt: now,
     };
 
-    this['recordEvent'](event as TodoDomainEvent);
+    this.recordEvent(event as TodoDomainEvent);
   }
 
   delete(now: Date = new Date(), reason: string | null = null): void {
@@ -205,6 +231,6 @@ export class Todo extends AggregateRoot<TodoDomainEvent> {
       occurredAt: now,
     };
 
-    this['recordEvent'](event as TodoDomainEvent);
+    this.recordEvent(event as TodoDomainEvent);
   }
 }
