@@ -23,6 +23,16 @@ export class TypeOrmTodoRepository implements ITodoRepository {
     return rows.map((row) => this.toDomain(row));
   }
 
+  async findByUserId(userId: string): Promise<Todo[]> {
+    const rows = await this.repo
+      .createQueryBuilder('todo')
+      .innerJoin('todo.category', 'category')
+      .where('category.userId = :userId', { userId })
+      .getMany();
+
+    return rows.map((row) => this.toDomain(row));
+  }
+
   async save(todo: Todo): Promise<void> {
     let row = await this.repo.findOne({ where: { id: todo.id } });
     if (!row) {
