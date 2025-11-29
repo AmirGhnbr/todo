@@ -8,6 +8,7 @@ import {
   Post,
   Req,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import type { Request } from 'express';
@@ -17,6 +18,11 @@ import { Category } from '../../domain/category/category';
 import { CategoryResponseDto, CreateCategoryDto, UpdateCategoryDto } from '../dto/category.dto';
 import { TodoResponseDto } from '../dto/todo.dto';
 import { TodoUseCases } from '../../application/todo/todo.use-cases';
+import { AppCacheService } from '../../infrastructure/cache/cache.service';
+import {
+  CategoryTodosCacheInterceptor,
+  UserCategoriesCacheInterceptor,
+} from '../../infrastructure/cache/user-cache.interceptor';
 
 @ApiTags('categories')
 @ApiBearerAuth()
@@ -26,6 +32,7 @@ export class CategoryController {
   constructor(
     private readonly categories: CategoryUseCases,
     private readonly todos: TodoUseCases,
+    private readonly cache: AppCacheService,
   ) {}
 
   @Post()
@@ -37,12 +44,14 @@ export class CategoryController {
       name: dto.name,
       description: dto.description ?? null,
     });
+    await this.cache.invalidateUserCategories(userId);
     return this.toDto(category);
   }
 
   @Get()
   @ApiOperation({ summary: 'List categories for current user' })
   @ApiResponse({ status: 200, type: [CategoryResponseDto] })
+  @UseInterceptors(UserCategoriesCacheInterceptor)
   async list(@Req() req: Request): Promise<CategoryResponseDto[]> {
     const userId = (req as any).user.userId as string;
     const categories = await this.categories.listForUser(userId);
@@ -71,7 +80,11 @@ export class CategoryController {
       name: dto.name,
       description: dto.description ?? null,
     });
-    return category ? this.toDto(category) : null;
+    if (category) {
+      await this.cache.invalidateUserCategories(userId);
+      return this.toDto(category);
+    }
+    return null;
   }
 
   @Delete(':id')
@@ -79,12 +92,18 @@ export class CategoryController {
   @ApiResponse({ status: 204 })
   async remove(@Req() req: Request, @Param('id') id: string): Promise<void> {
     const userId = (req as any).user.userId as string;
-    await this.categories.delete(userId, id);
+    const deleted = await this.categories.delete(userId, id);
+    if (deleted) {
+      await this.cache.invalidateUserCategories(userId);
+      await this.cache.invalidateUserTodos(userId);
+      await this.cache.invalidateCategoryTodos(userId, id);
+    }
   }
 
   @Get(':categoryId/todos')
   @ApiOperation({ summary: 'List todos for a category' })
   @ApiResponse({ status: 200, type: [TodoResponseDto] })
+  @UseInterceptors(CategoryTodosCacheInterceptor)
   async listTodos(
     @Req() req: Request,
     @Param('categoryId') categoryId: string,
