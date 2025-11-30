@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import type { Server } from 'http';
+import { DataSource } from 'typeorm';
 
 describe('API flows (e2e)', () => {
   let app: INestApplication;
@@ -26,6 +27,10 @@ describe('API flows (e2e)', () => {
 
   afterAll(async () => {
     if (app) {
+      const dataSource = app.get(DataSource);
+      if (dataSource && dataSource.isInitialized) {
+        await dataSource.destroy();
+      }
       await app.close();
     }
   });

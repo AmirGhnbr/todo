@@ -47,6 +47,8 @@ import { PresentationModule } from './presentation.module';
           database,
           autoLoadEntities: true,
           synchronize: isDev || isTest,
+          dropSchema: isTest,
+          migrationsRun: false,
           logging: isDev,
         };
       },
@@ -81,4 +83,4 @@ import { PresentationModule } from './presentation.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }

@@ -7,9 +7,10 @@ import { TodoController } from './presentation/controllers/todo.controller';
 import { NotificationController } from './presentation/controllers/notification.controller';
 import { AuthModule } from './infrastructure/auth/auth.module';
 import { ApplicationModule } from './application.module';
+import { QueueModule } from './infrastructure/queue/queue.module';
 
 @Module({
-  imports: [AuthModule, ApplicationModule],
+  imports: [AuthModule, ApplicationModule, QueueModule],
   controllers: [
     AppController,
     AuthController,

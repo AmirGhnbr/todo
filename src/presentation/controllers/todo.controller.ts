@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Patch,
   Post,
@@ -134,6 +135,7 @@ export class TodoController {
   }
 
   @Post(':id/complete')
+  @HttpCode(200)
   @ApiOperation({ summary: 'Mark todo as completed' })
   @ApiResponse({ status: 200, type: TodoResponseDto })
   async complete(
