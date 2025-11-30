@@ -11,7 +11,10 @@ export class CategoryUseCases {
     private readonly events: EventStore,
   ) {}
 
-  async create(userId: string, input: { name: string; description?: string | null }) {
+  async create(
+    userId: string,
+    input: { name: string; description?: string | null },
+  ) {
     const user = await this.users.findById(userId);
     if (!user || user.isDeleted) {
       throw new Error('User not found');
@@ -45,7 +48,10 @@ export class CategoryUseCases {
       return null;
     }
 
-    category.update({ name: input.name, description: input.description ?? null });
+    category.update({
+      name: input.name,
+      description: input.description ?? null,
+    });
     await this.categories.save(category);
     const events = category.pullEvents();
     if (events.length) {

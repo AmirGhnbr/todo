@@ -157,7 +157,9 @@ export class Todo extends AggregateRoot<TodoDomainEvent> {
 
     if (params.status !== undefined && params.status !== this.status) {
       if (this.status === TodoStatus.Completed) {
-        throw new Error('Cannot change status of a completed todo; use complete()');
+        throw new Error(
+          'Cannot change status of a completed todo; use complete()',
+        );
       }
       this.status = params.status;
       changed = true;

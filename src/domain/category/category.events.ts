@@ -15,17 +15,20 @@ export interface CategoryDeletedPayload {
   isDeleted: boolean;
 }
 
-export interface CategoryCreatedEvent extends DomainEvent<CategoryCreatedPayload> {
+export interface CategoryCreatedEvent
+  extends DomainEvent<CategoryCreatedPayload> {
   readonly aggregateType: 'Category';
   readonly eventType: 'CategoryCreated';
 }
 
-export interface CategoryUpdatedEvent extends DomainEvent<CategoryUpdatedPayload> {
+export interface CategoryUpdatedEvent
+  extends DomainEvent<CategoryUpdatedPayload> {
   readonly aggregateType: 'Category';
   readonly eventType: 'CategoryUpdated';
 }
 
-export interface CategoryDeletedEvent extends DomainEvent<CategoryDeletedPayload> {
+export interface CategoryDeletedEvent
+  extends DomainEvent<CategoryDeletedPayload> {
   readonly aggregateType: 'Category';
   readonly eventType: 'CategoryDeleted';
 }

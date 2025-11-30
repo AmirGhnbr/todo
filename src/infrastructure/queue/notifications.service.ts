@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bull';
+import type { Queue } from 'bull';
 
 @Injectable()
 export class NotificationsQueueService {
@@ -7,10 +8,14 @@ export class NotificationsQueueService {
 
   constructor(
     @InjectQueue('notifications-queue')
-    private readonly queue: any,
+    private readonly queue: Queue,
   ) {}
 
-  async scheduleTodoDueNotification(todoId: string, userId: string, dueDate: Date | null): Promise<void> {
+  async scheduleTodoDueNotification(
+    todoId: string,
+    userId: string,
+    dueDate: Date | null,
+  ): Promise<void> {
     const jobId = this.jobIdForTodo(todoId);
 
     // Remove any existing scheduled job for this todo
@@ -40,7 +45,9 @@ export class NotificationsQueueService {
       },
     );
 
-    this.logger.debug(`Scheduled notification for todo ${todoId} in ${delay}ms`);
+    this.logger.debug(
+      `Scheduled notification for todo ${todoId} in ${delay}ms`,
+    );
   }
 
   async cancelTodoDueNotification(todoId: string): Promise<void> {

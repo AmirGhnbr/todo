@@ -14,7 +14,9 @@ export class TodoCleanupScheduler {
     const cutoff = new Date(now - 30 * 24 * 60 * 60 * 1000);
     const deleted = await this.todos.deleteCompletedOlderThan(cutoff);
     if (deleted > 0) {
-      this.logger.log(`Cleaned up ${deleted} completed todos older than 30 days`);
+      this.logger.log(
+        `Cleaned up ${deleted} completed todos older than 30 days`,
+      );
     }
   }
 }

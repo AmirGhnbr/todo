@@ -31,6 +31,7 @@ async function bootstrap() {
   SwaggerModule.setup('docs-api', app, document);
 
   await app.listen(process.env.PORT ?? 3000);
+  logger.log(`Application is running on port ${process.env.PORT ?? 3000}`);
 }
 
 bootstrap().catch((error) => {

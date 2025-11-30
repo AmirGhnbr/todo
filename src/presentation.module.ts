@@ -10,7 +10,13 @@ import { ApplicationModule } from './application.module';
 
 @Module({
   imports: [AuthModule, ApplicationModule],
-  controllers: [AppController, AuthController, CategoryController, TodoController, NotificationController],
+  controllers: [
+    AppController,
+    AuthController,
+    CategoryController,
+    TodoController,
+    NotificationController,
+  ],
   providers: [AppService],
 })
 export class PresentationModule {}

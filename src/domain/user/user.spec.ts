@@ -20,7 +20,12 @@ describe('User domain', () => {
 
   it('updates profile and records event', () => {
     const email = Email.create('test@example.com');
-    const user = User.create({ id: 'user-2', name: 'Old Name', email, passwordHash: 'hash' });
+    const user = User.create({
+      id: 'user-2',
+      name: 'Old Name',
+      email,
+      passwordHash: 'hash',
+    });
 
     user.updateProfile({ name: 'New Name' });
 
@@ -29,7 +34,12 @@ describe('User domain', () => {
 
   it('deletes user and marks as deleted', () => {
     const email = Email.create('test@example.com');
-    const user = User.create({ id: 'user-3', name: 'To Delete', email, passwordHash: 'hash' });
+    const user = User.create({
+      id: 'user-3',
+      name: 'To Delete',
+      email,
+      passwordHash: 'hash',
+    });
 
     user.delete();
 

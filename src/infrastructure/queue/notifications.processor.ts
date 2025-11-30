@@ -1,5 +1,11 @@
 import { Logger } from '@nestjs/common';
-import { Processor, Process, OnQueueActive, OnQueueCompleted, OnQueueFailed } from '@nestjs/bull';
+import {
+  Processor,
+  Process,
+  OnQueueActive,
+  OnQueueCompleted,
+  OnQueueFailed,
+} from '@nestjs/bull';
 import { Job } from 'bull';
 import { NotificationUseCases } from '../../application/notification/notification.use-cases';
 
@@ -30,7 +36,9 @@ export class NotificationsProcessor {
     const { todoId, userId, dueDate, notifyAt } = job.data ?? {};
 
     if (!userId || !todoId) {
-      this.logger.warn('Received todo-due-notification job without userId or todoId');
+      this.logger.warn(
+        'Received todo-due-notification job without userId or todoId',
+      );
       return;
     }
 
@@ -58,6 +66,8 @@ export class NotificationsProcessor {
 
   @OnQueueFailed()
   onFailed(job: BullJob, error: Error): void {
-    this.logger.error(`Job ${job?.id} (${job?.name}) failed: ${error?.message ?? error}`);
+    this.logger.error(
+      `Job ${job?.id} (${job?.name}) failed: ${error?.message ?? error}`,
+    );
   }
 }

@@ -11,11 +11,11 @@ describe('Category domain', () => {
     createdAt: new Date(),
     updatedAt: new Date(),
     isDeleted: false,
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+
     updateProfile: () => {},
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+
     delete: () => {},
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+
     pullEvents: () => [],
   } as unknown as User;
 
@@ -33,7 +33,12 @@ describe('Category domain', () => {
   });
 
   it('updates category name and description', () => {
-    const category = Category.createForUser({ id: 'cat-2', user, name: 'Old', description: 'Old desc' });
+    const category = Category.createForUser({
+      id: 'cat-2',
+      user,
+      name: 'Old',
+      description: 'Old desc',
+    });
 
     category.update({ name: 'New', description: 'New desc' });
 
@@ -42,7 +47,11 @@ describe('Category domain', () => {
   });
 
   it('deletes category and marks as deleted', () => {
-    const category = Category.createForUser({ id: 'cat-3', user, name: 'To delete' });
+    const category = Category.createForUser({
+      id: 'cat-3',
+      user,
+      name: 'To delete',
+    });
 
     category.delete();
 

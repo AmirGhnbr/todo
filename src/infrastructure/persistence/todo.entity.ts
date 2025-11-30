@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { CategoryEntity } from './category.entity';
 
 @Entity({ name: 'todos' })
@@ -39,9 +33,13 @@ export class TodoEntity {
   @Column({ default: false })
   isDeleted!: boolean;
 
-  @ManyToOne(() => CategoryEntity, (category: CategoryEntity) => category.todos, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(
+    () => CategoryEntity,
+    (category: CategoryEntity) => category.todos,
+    {
+      onDelete: 'CASCADE',
+    },
+  )
   @JoinColumn({ name: 'category_id' })
   category?: CategoryEntity;
 }

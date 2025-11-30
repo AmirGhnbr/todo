@@ -10,7 +10,7 @@ export interface UserUpdatedPayload {
   email: string;
 }
 
-export interface UserDeletedPayload {}
+export type UserDeletedPayload = Record<string, never>;
 
 export interface UserCreatedEvent extends DomainEvent<UserCreatedPayload> {
   readonly aggregateType: 'User';

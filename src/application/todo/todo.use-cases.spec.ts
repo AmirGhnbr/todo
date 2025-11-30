@@ -48,7 +48,9 @@ describe('TodoUseCases', () => {
     const deleted = await useCases.deleteCompletedOlderThan(cutoff);
 
     expect(deleted).toBe(1);
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(todosRepo.save).toHaveBeenCalledTimes(1);
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(events.appendEvents).toHaveBeenCalledTimes(1);
   });
 });

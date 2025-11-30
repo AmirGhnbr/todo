@@ -14,7 +14,10 @@ export class AppCacheService {
     await this.cache.del(this.keyForUserTodos(userId));
   }
 
-  async invalidateCategoryTodos(userId: string, categoryId: string): Promise<void> {
+  async invalidateCategoryTodos(
+    userId: string,
+    categoryId: string,
+  ): Promise<void> {
     await this.cache.del(this.keyForCategoryTodos(userId, categoryId));
   }
 

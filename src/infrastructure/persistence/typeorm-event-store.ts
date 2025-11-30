@@ -12,7 +12,10 @@ export class TypeOrmEventStore implements EventStore {
     private readonly events: Repository<EventEntity>,
   ) {}
 
-  async appendEvents(aggregateId: string, events: DomainEvent[]): Promise<void> {
+  async appendEvents(
+    aggregateId: string,
+    events: DomainEvent[],
+  ): Promise<void> {
     if (!events.length) return;
 
     const rows = events.map((event) => {

@@ -12,12 +12,15 @@ export class TodoUseCases {
     private readonly events: EventStore,
   ) {}
 
-  async create(userId: string, input: {
-    categoryId: string;
-    title: string;
-    description?: string | null;
-    dueDate?: Date | null;
-  }) {
+  async create(
+    userId: string,
+    input: {
+      categoryId: string;
+      title: string;
+      description?: string | null;
+      dueDate?: Date | null;
+    },
+  ) {
     const category = await this.categories.findById(input.categoryId);
     if (!category || category.userId !== userId || category.isDeleted) {
       throw new Error('Category not found');
@@ -45,7 +48,12 @@ export class TodoUseCases {
   async update(
     userId: string,
     todoId: string,
-    input: { title?: string; description?: string | null; dueDate?: Date | null; status?: TodoStatus },
+    input: {
+      title?: string;
+      description?: string | null;
+      dueDate?: Date | null;
+      status?: TodoStatus;
+    },
   ) {
     const todo = await this.todos.findById(todoId);
     if (!todo || todo.isDeleted) {

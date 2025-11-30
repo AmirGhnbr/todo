@@ -22,7 +22,10 @@ export class AuthController {
       password: dto.password,
     });
 
-    const token = await this.jwt.signAsync({ sub: user.id, email: user.email.asString });
+    const token = await this.jwt.signAsync({
+      sub: user.id,
+      email: user.email.asString,
+    });
     return { accessToken: token };
   }
 
@@ -31,8 +34,14 @@ export class AuthController {
   @ApiOperation({ summary: 'Login and get JWT' })
   @ApiResponse({ status: 200, type: AuthResponseDto })
   async login(@Body() dto: LoginDto): Promise<AuthResponseDto> {
-    const user = await this.auth.login({ email: dto.email, password: dto.password });
-    const token = await this.jwt.signAsync({ sub: user.id, email: user.email.asString });
+    const user = await this.auth.login({
+      email: dto.email,
+      password: dto.password,
+    });
+    const token = await this.jwt.signAsync({
+      sub: user.id,
+      email: user.email.asString,
+    });
     return { accessToken: token };
   }
 }

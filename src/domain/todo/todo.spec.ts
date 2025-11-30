@@ -12,11 +12,11 @@ describe('Todo domain', () => {
     createdAt: new Date(),
     updatedAt: new Date(),
     isDeleted: false,
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+
     update: () => {},
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+
     delete: () => {},
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+
     pullEvents: () => [],
   } as unknown as Category;
 
@@ -36,7 +36,11 @@ describe('Todo domain', () => {
   });
 
   it('updates fields and records update event', () => {
-    const todo = Todo.createForCategory({ id: 'todo-2', category, title: 'Old title' });
+    const todo = Todo.createForCategory({
+      id: 'todo-2',
+      category,
+      title: 'Old title',
+    });
 
     todo.update({ title: 'New title', description: 'New desc' });
 
@@ -45,7 +49,11 @@ describe('Todo domain', () => {
   });
 
   it('completes a todo and records completedAt', () => {
-    const todo = Todo.createForCategory({ id: 'todo-3', category, title: 'Complete me' });
+    const todo = Todo.createForCategory({
+      id: 'todo-3',
+      category,
+      title: 'Complete me',
+    });
 
     todo.complete();
 
@@ -54,7 +62,11 @@ describe('Todo domain', () => {
   });
 
   it('deletes a todo and marks as deleted', () => {
-    const todo = Todo.createForCategory({ id: 'todo-4', category, title: 'Delete me' });
+    const todo = Todo.createForCategory({
+      id: 'todo-4',
+      category,
+      title: 'Delete me',
+    });
 
     todo.delete();
 

@@ -20,15 +20,30 @@ import { TypeOrmNotificationRepository } from './typeorm-notification.repository
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserEntity, CategoryEntity, TodoEntity, EventEntity, NotificationEntity]),
+    TypeOrmModule.forFeature([
+      UserEntity,
+      CategoryEntity,
+      TodoEntity,
+      EventEntity,
+      NotificationEntity,
+    ]),
   ],
   providers: [
     { provide: USER_REPOSITORY, useClass: TypeOrmUserRepository },
     { provide: CATEGORY_REPOSITORY, useClass: TypeOrmCategoryRepository },
     { provide: TODO_REPOSITORY, useClass: TypeOrmTodoRepository },
     { provide: EVENT_STORE, useClass: TypeOrmEventStore },
-    { provide: NOTIFICATION_REPOSITORY, useClass: TypeOrmNotificationRepository },
+    {
+      provide: NOTIFICATION_REPOSITORY,
+      useClass: TypeOrmNotificationRepository,
+    },
   ],
-  exports: [USER_REPOSITORY, CATEGORY_REPOSITORY, TODO_REPOSITORY, EVENT_STORE, NOTIFICATION_REPOSITORY],
+  exports: [
+    USER_REPOSITORY,
+    CATEGORY_REPOSITORY,
+    TODO_REPOSITORY,
+    EVENT_STORE,
+    NOTIFICATION_REPOSITORY,
+  ],
 })
 export class PersistenceModule {}

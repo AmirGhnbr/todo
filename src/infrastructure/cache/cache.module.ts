@@ -21,7 +21,10 @@ import {
         const port = parseInt(config.get<string>('REDIS_PORT') ?? '6379', 10);
         const db = parseInt(config.get<string>('REDIS_DB') ?? '0', 10);
         const password = config.get<string>('REDIS_PASSWORD') ?? undefined;
-        const ttl = parseInt(config.get<string>('CACHE_TTL_SECONDS') ?? '60', 10);
+        const ttl = parseInt(
+          config.get<string>('CACHE_TTL_SECONDS') ?? '60',
+          10,
+        );
 
         return {
           store: await redisStore({

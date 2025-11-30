@@ -6,6 +6,12 @@ import { AuthModule } from './infrastructure/auth/auth.module';
 import { SchedulingModule } from './infrastructure/scheduling/scheduling.module';
 
 @Module({
-  imports: [PersistenceModule, AppCacheModule, QueueModule, AuthModule, SchedulingModule],
+  imports: [
+    PersistenceModule,
+    AppCacheModule,
+    QueueModule,
+    AuthModule,
+    SchedulingModule,
+  ],
 })
 export class InfrastructureModule {}

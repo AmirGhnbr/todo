@@ -91,7 +91,11 @@ export class Category extends AggregateRoot<CategoryDomainEvent> {
     return category;
   }
 
-  update(params: { name?: string; description?: string | null; now?: Date }): void {
+  update(params: {
+    name?: string;
+    description?: string | null;
+    now?: Date;
+  }): void {
     if (this.isDeleted) {
       throw new Error('Cannot update a deleted category');
     }

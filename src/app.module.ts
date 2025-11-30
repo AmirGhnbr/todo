@@ -18,7 +18,10 @@ import { PresentationModule } from './presentation.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
-        const port = parseInt(configService.get<string>('DB_PORT') ?? '5432', 10);
+        const port = parseInt(
+          configService.get<string>('DB_PORT') ?? '5432',
+          10,
+        );
         const username =
           configService.get<string>('DB_USERNAME') ??
           configService.get<string>('DB_USER') ??
@@ -52,7 +55,10 @@ import { PresentationModule } from './presentation.module';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         const ttl = parseInt(config.get<string>('THROTTLE_TTL') ?? '60', 10);
-        const limit = parseInt(config.get<string>('THROTTLE_LIMIT') ?? '100', 10);
+        const limit = parseInt(
+          config.get<string>('THROTTLE_LIMIT') ?? '100',
+          10,
+        );
         return [
           {
             ttl,

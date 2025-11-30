@@ -42,8 +42,8 @@ describe('API flows (e2e)', () => {
       .send({ email, password })
       .expect(200);
 
-    expect(res.body.accessToken).toBeDefined();
-    accessToken = res.body.accessToken;
+    expect((res.body as { accessToken: string }).accessToken).toBeDefined();
+    accessToken = (res.body as { accessToken: string }).accessToken;
   });
 
   it('creates and lists categories', async () => {
@@ -53,7 +53,7 @@ describe('API flows (e2e)', () => {
       .send({ name: 'Work' })
       .expect(201);
 
-    expect(createRes.body.id).toBeDefined();
+    expect((createRes.body as { id: string }).id).toBeDefined();
 
     const listRes = await request(app.getHttpServer() as Server)
       .get('/categories')
@@ -61,7 +61,7 @@ describe('API flows (e2e)', () => {
       .expect(200);
 
     expect(Array.isArray(listRes.body)).toBe(true);
-    expect(listRes.body.length).toBeGreaterThan(0);
+    expect((listRes.body as unknown[]).length).toBeGreaterThan(0);
   });
 
   it('creates a todo and fetches it', async () => {
@@ -71,9 +71,11 @@ describe('API flows (e2e)', () => {
       .send({ name: 'Personal' })
       .expect(201);
 
-    const categoryId = categoryRes.body.id as string;
+    const categoryId = (categoryRes.body as { id: string }).id;
 
-    const dueDate = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString();
+    const dueDate = new Date(
+      Date.now() + 2 * 24 * 60 * 60 * 1000,
+    ).toISOString();
 
     const todoRes = await request(app.getHttpServer() as Server)
       .post('/todos')
@@ -81,14 +83,14 @@ describe('API flows (e2e)', () => {
       .send({ categoryId, title: 'Buy milk', dueDate })
       .expect(201);
 
-    const todoId = todoRes.body.id as string;
+    const todoId = (todoRes.body as { id: string }).id;
 
     const getRes = await request(app.getHttpServer() as Server)
       .get(`/todos/${todoId}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .expect(200);
 
-    expect(getRes.body.id).toBe(todoId);
+    expect((getRes.body as { id: string }).id).toBe(todoId);
   });
 
   it('completes a todo', async () => {
@@ -98,7 +100,7 @@ describe('API flows (e2e)', () => {
       .send({ name: 'Chores' })
       .expect(201);
 
-    const categoryId = categoryRes.body.id as string;
+    const categoryId = (categoryRes.body as { id: string }).id;
 
     const todoRes = await request(app.getHttpServer() as Server)
       .post('/todos')
@@ -106,14 +108,14 @@ describe('API flows (e2e)', () => {
       .send({ categoryId, title: 'Clean house' })
       .expect(201);
 
-    const todoId = todoRes.body.id as string;
+    const todoId = (todoRes.body as { id: string }).id;
 
     const completeRes = await request(app.getHttpServer() as Server)
       .post(`/todos/${todoId}/complete`)
       .set('Authorization', `Bearer ${accessToken}`)
       .expect(200);
 
-    expect(completeRes.body.status).toBeDefined();
+    expect((completeRes.body as { status: string }).status).toBeDefined();
   });
 
   it('creates, lists, and marks notifications as read', async () => {
@@ -123,7 +125,7 @@ describe('API flows (e2e)', () => {
       .send({ title: 'Hello', message: 'World' })
       .expect(201);
 
-    const notificationId = createRes.body.id as string;
+    const notificationId = (createRes.body as { id: string }).id;
 
     const listRes = await request(app.getHttpServer() as Server)
       .get('/notifications/unread')
@@ -131,7 +133,9 @@ describe('API flows (e2e)', () => {
       .expect(200);
 
     expect(Array.isArray(listRes.body)).toBe(true);
-    expect(listRes.body.some((n: any) => n.id === notificationId)).toBe(true);
+    expect(
+      (listRes.body as { id: string }[]).some((n) => n.id === notificationId),
+    ).toBe(true);
 
     await request(app.getHttpServer() as Server)
       .patch(`/notifications/${notificationId}/read`)
@@ -143,6 +147,8 @@ describe('API flows (e2e)', () => {
       .set('Authorization', `Bearer ${accessToken}`)
       .expect(200);
 
-    expect(listAfter.body.some((n: any) => n.id === notificationId)).toBe(false);
+    expect(
+      (listAfter.body as { id: string }[]).some((n) => n.id === notificationId),
+    ).toBe(false);
   });
 });
