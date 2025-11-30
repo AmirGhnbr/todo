@@ -23,6 +23,18 @@ export class TypeOrmTodoRepository implements ITodoRepository {
     return rows.map((row) => this.toDomain(row));
   }
 
+  async findCompletedBefore(cutoff: Date): Promise<Todo[]> {
+    const rows = await this.repo
+      .createQueryBuilder('todo')
+      .where('todo.status = :status', { status: TodoStatus.Completed })
+      .andWhere('todo.completedAt IS NOT NULL')
+      .andWhere('todo.completedAt < :cutoff', { cutoff })
+      .andWhere('todo.isDeleted = false')
+      .getMany();
+
+    return rows.map((row) => this.toDomain(row));
+  }
+
   async findByUserId(userId: string): Promise<Todo[]> {
     const rows = await this.repo
       .createQueryBuilder('todo')

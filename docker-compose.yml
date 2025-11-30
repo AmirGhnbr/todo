@@ -16,7 +16,13 @@ services:
       DB_DATABASE: nestdb
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      REDIS_DB: 0
       NODE_ENV: development
+      JWT_SECRET: your-super-secret-jwt-key-change-in-production
+      JWT_EXPIRES_IN: 3600
+      CACHE_TTL_SECONDS: 60
+      THROTTLE_TTL: 60
+      THROTTLE_LIMIT: 100
     ports:
       - '3000:3000'
     networks:

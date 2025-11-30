@@ -143,4 +143,25 @@ export class TodoUseCases {
     const todos = await this.todos.findByCategoryId(categoryId);
     return todos.filter((t) => !t.isDeleted);
   }
+
+  async deleteCompletedOlderThan(cutoff: Date): Promise<number> {
+    const todos = await this.todos.findCompletedBefore(cutoff);
+    let deletedCount = 0;
+
+    for (const todo of todos) {
+      if (todo.isDeleted) {
+        continue;
+      }
+
+      todo.delete();
+      await this.todos.save(todo);
+      const events = todo.pullEvents();
+      if (events.length) {
+        await this.events.appendEvents(todo.id, events);
+      }
+      deletedCount += 1;
+    }
+
+    return deletedCount;
+  }
 }

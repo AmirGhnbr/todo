@@ -18,6 +18,7 @@ import { TodoResponseDto, CreateTodoDto, UpdateTodoDto } from '../dto/todo.dto';
 import { TodoStatus } from '../../domain/todo/todo-status.vo';
 import { AppCacheService } from '../../infrastructure/cache/cache.service';
 import { UserTodosCacheInterceptor } from '../../infrastructure/cache/user-cache.interceptor';
+import { NotificationsQueueService } from '../../infrastructure/queue/notifications.service';
 
 @ApiTags('todos')
 @ApiBearerAuth()
@@ -27,6 +28,7 @@ export class TodoController {
   constructor(
     private readonly todos: TodoUseCases,
     private readonly cache: AppCacheService,
+    private readonly notifications: NotificationsQueueService,
   ) {}
 
   @Post()
@@ -43,6 +45,7 @@ export class TodoController {
 
     await this.cache.invalidateUserTodos(userId);
     await this.cache.invalidateCategoryTodos(userId, dto.categoryId);
+    await this.notifications.scheduleTodoDueNotification(todo.id, userId, todo.dueDate);
     return this.toDto(todo);
   }
 
@@ -82,6 +85,7 @@ export class TodoController {
     if (todo) {
       await this.cache.invalidateUserTodos(userId);
       await this.cache.invalidateCategoryTodos(userId, todo.categoryId);
+      await this.notifications.scheduleTodoDueNotification(todo.id, userId, todo.dueDate);
       return this.toDto(todo);
     }
     return null;
@@ -97,6 +101,7 @@ export class TodoController {
     if (deleted && existing) {
       await this.cache.invalidateUserTodos(userId);
       await this.cache.invalidateCategoryTodos(userId, existing.categoryId);
+      await this.notifications.cancelTodoDueNotification(existing.id);
     }
   }
 
@@ -109,6 +114,7 @@ export class TodoController {
     if (todo) {
       await this.cache.invalidateUserTodos(userId);
       await this.cache.invalidateCategoryTodos(userId, todo.categoryId);
+      await this.notifications.cancelTodoDueNotification(todo.id);
       return this.toDto(todo);
     }
     return null;
