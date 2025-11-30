@@ -34,7 +34,9 @@ import { PresentationModule } from './presentation.module';
           configService.get<string>('DB_DATABASE') ??
           configService.get<string>('DB_NAME') ??
           'nestdb';
-        const isDev = configService.get<string>('NODE_ENV') === 'development';
+        const nodeEnv = configService.get<string>('NODE_ENV');
+        const isDev = nodeEnv === 'development';
+        const isTest = nodeEnv === 'test';
 
         return {
           type: 'postgres' as const,
@@ -44,7 +46,7 @@ import { PresentationModule } from './presentation.module';
           password,
           database,
           autoLoadEntities: true,
-          synchronize: isDev,
+          synchronize: isDev || isTest,
           logging: isDev,
         };
       },

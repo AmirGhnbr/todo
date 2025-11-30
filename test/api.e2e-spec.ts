@@ -25,7 +25,9 @@ describe('API flows (e2e)', () => {
   });
 
   afterAll(async () => {
-    await app.close();
+    if (app) {
+      await app.close();
+    }
   });
 
   it('signs up and logs in a user', async () => {
