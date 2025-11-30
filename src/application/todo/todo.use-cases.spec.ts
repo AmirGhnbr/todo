@@ -35,7 +35,8 @@ describe('TodoUseCases', () => {
       findById: jest.fn(),
       findByUserId: jest.fn(),
       save: jest.fn(),
-    } as any;
+      delete: jest.fn(),
+    };
 
     const events: jest.Mocked<EventStore> = {
       appendEvents: jest.fn(),

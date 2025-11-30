@@ -2,6 +2,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
+import type { Server } from 'http';
 
 describe('API flows (e2e)', () => {
   let app: INestApplication;
@@ -31,12 +32,12 @@ describe('API flows (e2e)', () => {
     const email = `user+${Date.now()}@example.com`;
     const password = 'password123';
 
-    await request(app.getHttpServer())
+    await request(app.getHttpServer() as Server)
       .post('/auth/signup')
       .send({ name: 'E2E User', email, password })
       .expect(201);
 
-    const res = await request(app.getHttpServer())
+    const res = await request(app.getHttpServer() as Server)
       .post('/auth/login')
       .send({ email, password })
       .expect(200);
@@ -46,9 +47,7 @@ describe('API flows (e2e)', () => {
   });
 
   it('creates and lists categories', async () => {
-    const server = app.getHttpServer();
-
-    const createRes = await request(server)
+    const createRes = await request(app.getHttpServer() as Server)
       .post('/categories')
       .set('Authorization', `Bearer ${accessToken}`)
       .send({ name: 'Work' })
@@ -56,7 +55,7 @@ describe('API flows (e2e)', () => {
 
     expect(createRes.body.id).toBeDefined();
 
-    const listRes = await request(server)
+    const listRes = await request(app.getHttpServer() as Server)
       .get('/categories')
       .set('Authorization', `Bearer ${accessToken}`)
       .expect(200);
@@ -66,9 +65,7 @@ describe('API flows (e2e)', () => {
   });
 
   it('creates a todo and fetches it', async () => {
-    const server = app.getHttpServer();
-
-    const categoryRes = await request(server)
+    const categoryRes = await request(app.getHttpServer() as Server)
       .post('/categories')
       .set('Authorization', `Bearer ${accessToken}`)
       .send({ name: 'Personal' })
@@ -78,7 +75,7 @@ describe('API flows (e2e)', () => {
 
     const dueDate = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString();
 
-    const todoRes = await request(server)
+    const todoRes = await request(app.getHttpServer() as Server)
       .post('/todos')
       .set('Authorization', `Bearer ${accessToken}`)
       .send({ categoryId, title: 'Buy milk', dueDate })
@@ -86,7 +83,7 @@ describe('API flows (e2e)', () => {
 
     const todoId = todoRes.body.id as string;
 
-    const getRes = await request(server)
+    const getRes = await request(app.getHttpServer() as Server)
       .get(`/todos/${todoId}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .expect(200);
@@ -95,9 +92,7 @@ describe('API flows (e2e)', () => {
   });
 
   it('completes a todo', async () => {
-    const server = app.getHttpServer();
-
-    const categoryRes = await request(server)
+    const categoryRes = await request(app.getHttpServer() as Server)
       .post('/categories')
       .set('Authorization', `Bearer ${accessToken}`)
       .send({ name: 'Chores' })
@@ -105,7 +100,7 @@ describe('API flows (e2e)', () => {
 
     const categoryId = categoryRes.body.id as string;
 
-    const todoRes = await request(server)
+    const todoRes = await request(app.getHttpServer() as Server)
       .post('/todos')
       .set('Authorization', `Bearer ${accessToken}`)
       .send({ categoryId, title: 'Clean house' })
@@ -113,7 +108,7 @@ describe('API flows (e2e)', () => {
 
     const todoId = todoRes.body.id as string;
 
-    const completeRes = await request(server)
+    const completeRes = await request(app.getHttpServer() as Server)
       .post(`/todos/${todoId}/complete`)
       .set('Authorization', `Bearer ${accessToken}`)
       .expect(200);
@@ -122,9 +117,7 @@ describe('API flows (e2e)', () => {
   });
 
   it('creates, lists, and marks notifications as read', async () => {
-    const server = app.getHttpServer();
-
-    const createRes = await request(server)
+    const createRes = await request(app.getHttpServer() as Server)
       .post('/notifications')
       .set('Authorization', `Bearer ${accessToken}`)
       .send({ title: 'Hello', message: 'World' })
@@ -132,7 +125,7 @@ describe('API flows (e2e)', () => {
 
     const notificationId = createRes.body.id as string;
 
-    const listRes = await request(server)
+    const listRes = await request(app.getHttpServer() as Server)
       .get('/notifications/unread')
       .set('Authorization', `Bearer ${accessToken}`)
       .expect(200);
@@ -140,12 +133,12 @@ describe('API flows (e2e)', () => {
     expect(Array.isArray(listRes.body)).toBe(true);
     expect(listRes.body.some((n: any) => n.id === notificationId)).toBe(true);
 
-    await request(server)
+    await request(app.getHttpServer() as Server)
       .patch(`/notifications/${notificationId}/read`)
       .set('Authorization', `Bearer ${accessToken}`)
       .expect(200);
 
-    const listAfter = await request(server)
+    const listAfter = await request(app.getHttpServer() as Server)
       .get('/notifications/unread')
       .set('Authorization', `Bearer ${accessToken}`)
       .expect(200);

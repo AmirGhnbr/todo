@@ -1,11 +1,12 @@
 import { Category } from './category';
 import type { User } from '../user/user';
+import { Email } from '../user/email.vo';
 
 describe('Category domain', () => {
   const user: User = {
     id: 'user-1',
     name: 'User',
-    email: { asString: 'test@example.com' } as any,
+    email: Email.create('test@example.com'),
     passwordHash: 'hash',
     createdAt: new Date(),
     updatedAt: new Date(),

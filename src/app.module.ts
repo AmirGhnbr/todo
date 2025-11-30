@@ -7,8 +7,6 @@ import { DomainModule } from './domain.module';
 import { ApplicationModule } from './application.module';
 import { InfrastructureModule } from './infrastructure.module';
 import { PresentationModule } from './presentation.module';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 
 @Module({
   imports: [

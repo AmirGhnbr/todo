@@ -1,6 +1,23 @@
 import { Logger } from '@nestjs/common';
 import { Processor, Process, OnQueueActive, OnQueueCompleted, OnQueueFailed } from '@nestjs/bull';
+import { Job } from 'bull';
 import { NotificationUseCases } from '../../application/notification/notification.use-cases';
+
+interface TodoDueNotificationJobData {
+  todoId: string;
+  userId: string;
+  dueDate?: string;
+  notifyAt?: string;
+}
+
+interface TodoDueNotificationJob extends Job {
+  data: TodoDueNotificationJobData;
+}
+
+interface BullJob {
+  id?: string | number;
+  name?: string;
+}
 
 @Processor('notifications-queue')
 export class NotificationsProcessor {
@@ -9,7 +26,7 @@ export class NotificationsProcessor {
   constructor(private readonly notifications: NotificationUseCases) {}
 
   @Process('todo-due-notification')
-  async handleTodoDueNotification(job: any): Promise<void> {
+  async handleTodoDueNotification(job: TodoDueNotificationJob): Promise<void> {
     const { todoId, userId, dueDate, notifyAt } = job.data ?? {};
 
     if (!userId || !todoId) {
@@ -30,17 +47,17 @@ export class NotificationsProcessor {
   }
 
   @OnQueueActive()
-  onActive(job: any): void {
+  onActive(job: BullJob): void {
     this.logger.debug(`Job ${job.id} (${job.name}) is active`);
   }
 
   @OnQueueCompleted()
-  onCompleted(job: any): void {
+  onCompleted(job: BullJob): void {
     this.logger.debug(`Job ${job.id} (${job.name}) completed`);
   }
 
   @OnQueueFailed()
-  onFailed(job: any, error: any): void {
+  onFailed(job: BullJob, error: Error): void {
     this.logger.error(`Job ${job?.id} (${job?.name}) failed: ${error?.message ?? error}`);
   }
 }

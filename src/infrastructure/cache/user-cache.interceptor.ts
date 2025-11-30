@@ -6,6 +6,13 @@ import { Reflector } from '@nestjs/core';
 import type { Request } from 'express';
 import { AppCacheService } from './cache.service';
 
+interface AuthenticatedRequest extends Request {
+  user?: {
+    userId: string;
+    email?: string;
+  };
+}
+
 @Injectable()
 export class UserCategoriesCacheInterceptor extends CacheInterceptor {
   constructor(
@@ -17,8 +24,8 @@ export class UserCategoriesCacheInterceptor extends CacheInterceptor {
   }
 
   protected trackBy(context: ExecutionContext): string | undefined {
-    const request = context.switchToHttp().getRequest<Request>();
-    const userId = (request as any).user?.userId as string | undefined;
+    const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
+    const userId = request.user?.userId;
     if (!userId) {
       return undefined;
     }
@@ -38,8 +45,8 @@ export class UserTodosCacheInterceptor extends CacheInterceptor {
   }
 
   protected trackBy(context: ExecutionContext): string | undefined {
-    const request = context.switchToHttp().getRequest<Request>();
-    const userId = (request as any).user?.userId as string | undefined;
+    const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
+    const userId = request.user?.userId;
     if (!userId) {
       return undefined;
     }
@@ -59,8 +66,8 @@ export class CategoryTodosCacheInterceptor extends CacheInterceptor {
   }
 
   protected trackBy(context: ExecutionContext): string | undefined {
-    const request = context.switchToHttp().getRequest<Request>();
-    const userId = (request as any).user?.userId as string | undefined;
+    const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
+    const userId = request.user?.userId;
     const categoryId = request.params?.categoryId as string | undefined;
 
     if (!userId || !categoryId) {
